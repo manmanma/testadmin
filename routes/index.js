@@ -61,6 +61,15 @@ router.post('/update', function (req, res,next) {
   if(!userId) {// 如果没有, 说明没有登陆, 直接返回提示
     return res.send({code: 1, msg: '请先登陆'});
   }
+  /*UserModel.update({_id:userId},{$set:req.body},(err,userData) => {
+    if(userData){
+      const {_id, username, type} = userData
+      const data = Object.assign(req.body, {_id, username, type})
+      res.send({code: 0, data})
+    }else{
+      res.send({code: 2, msg: '更新失败'})
+    }
+  })*/
   //更新数据库中对应的数据
   UserModel.findByIdAndUpdate({_id: userId}, req.body, function (err, user) {// user是数据库中原来的数据
     const {_id, username, type} = user
