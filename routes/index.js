@@ -16,13 +16,23 @@ router.get('/user', function(req, res, next) {
   }
   UserModel.findOne({_id:userId},filter,(err,userData) => {
     if(userData){
-      return res.json({code:0,data:userData})
+      res.json({code:0,data:userData})
     }else{
       res.clearCookie('userId')
-      return res.send({code: 2, msg: '没有这个用户'});
+      //return res.send({code: 2, msg: '没有这个用户'});
     }
   })
 });
+router.get('/userlist',function (req,res,next) {
+  const {type} = req.query
+  UserModel.find({type},filter,(err, userData)=>{
+    if(userData){
+      res.json({code:0,data:userData})
+    }else{
+      res.send({code: 1, msg: '暂时没数据'});
+    }
+  })
+})
 router.post('/register',(req,res) => {
   //1.获取数据
   const {username,password,type} = req.body;
@@ -48,7 +58,7 @@ router.post('/login',(req,res)=>{
     if(userData){
       //cookie 注册后立即登陆 免登陆7天
       res.cookie('userId',userData._id,{maxAge:1000*60*60*24*7})
-      res.json({code:0,data:{_id:userData._id,username,type:userData.type,header:userData.header}})
+      res.json({code:0,data:userData})
     }else{
       res.send({code: 1, msg: '用户名或密码错误'})
     }
